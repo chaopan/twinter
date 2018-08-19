@@ -5,12 +5,14 @@ import { BrowserRouter, Route, Link } from 'react-router-dom';
 import { submit, getContent } from '../utilities';
 import NewPost from './NewPost';
 import PostList from './PostList';
+import {Button} from 'reactstrap'
 import './App.css';
 
 export const POST_NONE = 0;
 export const POST_SUCCEEDED = 1;
 export const POST_ERRORED = -1;
 export const ENDPOINT_URL = "https://jsonplaceholder.typicode.com/posts";
+export const BATCH_LENGTH = 10;
 
 class App extends Component {
   state = {
@@ -18,15 +20,21 @@ class App extends Component {
     title: "",
     body: "",
     posts: [],
-    submitStatus: POST_NONE
+    submitStatus: POST_NONE,
+    getFailed: false,
+    hasMore: true
   }
   //ACTIONS
   handleSuccess = (data) => {
-    this.setState({ posts: data });
+    const newData = this.state.posts.concat(data)
+    if(data.length < BATCH_LENGTH){
+      this.setState({hasMore: false});
+    }
+    this.setState({ posts: newData });
   }
 
   handleFailure = (status) => {
-    console.log('handleFailure', status);
+    this.setState({getFailed: true, hasMore: false});
   }
 
   handleSubmit = (evt) => {
@@ -65,26 +73,25 @@ class App extends Component {
     this.setState({submitStatus: POST_NONE});
   }
 
-
-  componentDidMount() {
-    //TODO: make this GET occur earlier
-    const contentPromise = getContent(ENDPOINT_URL);
-    contentPromise.then(this.handleSuccess, this.handleFailure)
-  }
-
   render() {
     return (
       <BrowserRouter>
         <div className="App">
           <header className="App-header">
             {/* <img src={logo} className="App-logo" alt="logo" /> */}
-            <h1 className="App-title">Poop</h1>
-            <Link to="/">Home</Link>
-            <Link to="/new">New Post</Link>
+            <h1 className="App-title">Hey There!</h1>
+            <Link className="home-link" to="/">
+              <Button>Home</Button>
+            </Link>
+            <Link to="/new">
+              <Button>New Post</Button>
+            </Link>
           </header>
           <Route exact path="/" render={() => (
             <PostList
               posts={this.state.posts}
+              hasMore={this.state.hasMore}
+              getFailed={this.state.getFailed}
               //actions
               handleSuccess={this.handleSuccess}
               handleFailure={this.handleFailure}
