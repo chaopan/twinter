@@ -86,7 +86,6 @@ class App extends Component {
       <BrowserRouter>
         <div className="App">
           <header className="App-header">
-            {/* <img src={logo} className="App-logo" alt="logo" /> */}
             <h1 className="App-title">Hey There!</h1>
             <Link to="/">
               <Button className="nav-btn">Home</Button>
