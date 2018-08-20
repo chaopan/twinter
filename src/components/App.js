@@ -27,7 +27,6 @@ class App extends Component {
   }
   //ACTIONS
   loadMore = (page) => {
-    console.log('loadmore');
     const start = this.state.posts.length;
     const contentPromise = getContent(`${ENDPOINT_URL}?_start=${start}&_limit=${BATCH_LENGTH}`);
     contentPromise.then(this.handleSuccess, this.handleFailure)
