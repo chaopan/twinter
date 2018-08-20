@@ -11,6 +11,7 @@ import './App.css';
 export const POST_NONE = 0;
 export const POST_SUCCEEDED = 1;
 export const POST_ERRORED = -1;
+export const POST_PENDING = 2;
 export const ENDPOINT_URL = "https://jsonplaceholder.typicode.com/posts";
 export const BATCH_LENGTH = 10;
 
@@ -25,6 +26,13 @@ class App extends Component {
     hasMore: true
   }
   //ACTIONS
+  loadMore = (page) => {
+    console.log('loadmore');
+    const start = this.state.posts.length;
+    const contentPromise = getContent(`${ENDPOINT_URL}?_start=${start}&_limit=${BATCH_LENGTH}`);
+    contentPromise.then(this.handleSuccess, this.handleFailure)
+  }
+
   handleSuccess = (data) => {
     const newData = this.state.posts.concat(data)
     if(data.length < BATCH_LENGTH){
@@ -38,7 +46,7 @@ class App extends Component {
   }
 
   handleSubmit = (evt) => {
-    evt.preventDefault();
+    this.setState({ submitStatus: POST_PENDING });
     submit(
       ENDPOINT_URL,
       JSON.stringify({
@@ -48,11 +56,11 @@ class App extends Component {
       })
     ).then(this.postSucceeded, this.postFailed);
   }
-
+  //POST Successful, clear input fields
   postSucceeded = (response) => {
     this.setState({ submitStatus: POST_SUCCEEDED, name: "", title: "", body: "" });
   }
-
+  //POST Unsuccessful, set status
   postFailed = (error) => {
     this.setState({ submitStatus: POST_ERRORED });
   }
@@ -69,7 +77,7 @@ class App extends Component {
     this.setState({ body: val });
   }
 
-  clearMessage = (vl) => {
+  clearMessage = () => {
     this.setState({submitStatus: POST_NONE});
   }
 
@@ -80,11 +88,11 @@ class App extends Component {
           <header className="App-header">
             {/* <img src={logo} className="App-logo" alt="logo" /> */}
             <h1 className="App-title">Hey There!</h1>
-            <Link className="home-link" to="/">
-              <Button>Home</Button>
+            <Link to="/">
+              <Button className="nav-btn">Home</Button>
             </Link>
             <Link to="/new">
-              <Button>New Post</Button>
+              <Button className="nav-btn">New Post</Button>
             </Link>
           </header>
           <Route exact path="/" render={() => (
@@ -93,12 +101,13 @@ class App extends Component {
               hasMore={this.state.hasMore}
               getFailed={this.state.getFailed}
               //actions
+              loadMore={this.loadMore}
               handleSuccess={this.handleSuccess}
               handleFailure={this.handleFailure}
             />
           )} />
 
-          <Route path="/new" onChange={()=>{console.log('change')}} render={() => (
+          <Route path="/new" render={() => (
             <NewPost
               name={this.state.name}
               title={this.state.title}

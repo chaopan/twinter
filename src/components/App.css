@@ -1,14 +1,10 @@
-.App {
-  /* text-align: center; */
-}
-
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
   height: 80px;
 }
 
 .App-header {
-  background-color: #222;
+  background-color: #160C28;
   height: 150px;
   padding: 20px;
   color: white;
@@ -22,7 +18,86 @@
   font-size: large;
 }
 
+.App-header .nav-btn {
+  background-color: #EFCB68;
+  border-color: #EFCB68;
+  margin-right: 20px;
+  color: black;
+}
+
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
+}
+
+/* posts */
+.post-page {
+  background-color: #E1EFE6;
+  color: #000411;
+  padding-top: 10px;
+  min-height: 100vh
+}
+
+.scroll-container {
+  max-width:500px;
+  margin:auto;
+}
+
+.post {
+  /* max-width: 500px; */
+  margin-bottom: 10px;
+  animation: fadein 1s;
+}
+
+@keyframes fadein {
+  from {opacity: 0; }
+  to {opacity: 1; }
+}
+
+.post.loader {
+  border-radius: 0.25rem 0.25rem 0 0;
+  margin-bottom: 0px;
+  text-align: middle;
+}
+
+.post.loader img {
+  display: block;
+  margin: auto;
+}
+
+.post.failure {
+  background-color: #AEB7B3;
+  border: none;
+}
+
+/*new post */
+.form-page {
+  height: 100vh;
+  padding: 30px 10px 10px 10px;
+
+  background-color: #E1EFE6;
+}
+.form {
+  max-width: 500px;
+  margin: auto;
+  background-color: white;
+  padding: 20px;
+}
+.form .form-body {
+  height: 140px;
+}
+.counter {
+  float: right;
+  margin-top: 5px;
+}
+.form .form-submit{
+  background-color: #EFCB68;
+  color: black;
+  display:block;
+  margin: auto;
+  width: 40%;
+}
+
+.alert {
+  margin-top: 20px;
 }

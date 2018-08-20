@@ -7,10 +7,9 @@ export const submit = (url, data) => {
     xhr.onreadystatechange = () => {
       if(xhr.readyState === 4) {
         if(xhr.status === 201){
-          console.log('submit success');
           resolve(xhr.responseText)
         } else {
-          console.log('error', xhr.status);
+          console.log('submit failed with:', xhr.status);
           reject(xhr.status);
           
         }
@@ -30,16 +29,15 @@ export const getContent = (url) => {
     xhr.onreadystatechange = () => {
       if(xhr.readyState === 4) {
         if( xhr.status === 200) {
-          console.log('xhr successful');
           const resp = xhr.responseText;
           const respJson = JSON.parse(resp);
           resolve(respJson);
         } else {
-          console.log("xhr failed");
+          console.log("getContent failed with:", xhr.status);
           reject(xhr.status);
         }
       } else {
-        console.log("xhr processing going on");
+        console.log("xhr in progress");
       }
     }
     console.log("request sent successfully");

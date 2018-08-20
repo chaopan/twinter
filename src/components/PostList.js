@@ -1,56 +1,59 @@
 import React, { Component } from 'react';
 import { Card, CardBody, CardTitle, CardSubtitle, CardText } from 'reactstrap';
-import { getContent } from '../utilities';
 import InfiniteScroll from 'react-infinite-scroller'
-import { ENDPOINT_URL, BATCH_LENGTH } from './App';
-const Post = ({ user, title, body }) => (
-  <Card>
+import LoadingIcon from '../images/three-dots.svg'
+
+const Post = ({ user, title, body, className }) => (
+  <Card className={className}>
     <CardBody>
-    <CardSubtitle>{user}</CardSubtitle>
-      <CardTitle>{title}</CardTitle>
-      
-      <CardText>{body}</CardText>
+    <CardSubtitle className="post-user">{user}</CardSubtitle>
+      <CardTitle className="post-title">{title}</CardTitle> 
+      <CardText className="post-body">{body}</CardText>
     </CardBody>
   </Card>
 );
 
+const Loader = () => {
+  return <Post 
+    key={-1}
+    className="post loader" 
+    title={<img src={LoadingIcon} width="30" alt="Loading..."/>}
+    />
+}
+
+const Failure = () => {
+  return <Post 
+    className="post failure"
+    title={<span>Oh Noes! Something went wrong. Try <a href="">refreshing the page</a>.</span>}
+  />
+}
+
 export default class PostList extends Component {
-  componentDidMount() {
-    console.log('componentDidMount');
-  }
-
-  loadMore = (page) => {
-    const start = this.props.posts.length;
-    const contentPromise = getContent(`${ENDPOINT_URL}?_start=${start}&_limit=${BATCH_LENGTH}`);
-    contentPromise.then(this.props.handleSuccess, this.props.handleFailure)
-  }
-
   render() {
     return (
-      <div>
+      <div className='post-page'>
         <InfiniteScroll
           pageStart={0}
           initialLoad
-          loadMore={this.loadMore}
+          loadMore={this.props.loadMore}
           hasMore={this.props.hasMore}
-          loader={<div className='loader' key={0}>Loading...</div>}
+          loader={<Loader key={-1}/>}
+          className='scroll-container'
         >
           {this.props.posts.map((post, index) => {
             return <Post
               key={index}
+              className="post"
               user={post.userId}
               title={post.title}
               body={post.body}
             />
           })}
-
-
+          {this.props.getFailed && <Failure key={-2}/>}
         </InfiniteScroll>
 
 
-          {this.props.getFailed && <div>
-            oh noes!
-          </div>}
+          
 
       </div>
     )
